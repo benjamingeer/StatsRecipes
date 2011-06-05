@@ -66,10 +66,10 @@ data Flag = DataFile String |
 
 options :: [OptDescr Flag]
 options =
-  [ Option ['d']  ["data"]   (ReqArg DataFile "FILE") "data FILE",
-    Option ['t']  ["template"] (ReqArg TemplateFile "FILE") "template FILE",
-    Option ['s']  ["script"] (ReqArg ScriptFile "FILE") "script FILE",
-    Option ['o']  ["output"] (ReqArg OutputFile "FILE") "output FILE" ]
+  [ Option "d"  ["data"]   (ReqArg DataFile "FILE") "data FILE",
+    Option "t"  ["template"] (ReqArg TemplateFile "FILE") "template FILE",
+    Option "s"  ["script"] (ReqArg ScriptFile "FILE") "script FILE",
+    Option "o"  ["output"] (ReqArg OutputFile "FILE") "output FILE" ]
 
 getPlotOpts :: [String] -> [Flag]
 getPlotOpts args =
@@ -114,13 +114,13 @@ csvToDoubles :: CSV -> ([Double], [Double])
 csvToDoubles csv =
   foldr convRow ([], []) csv where
     convRow row (xAcc, yAcc) = case row of
-      x:y:[] -> ((fieldToDouble x) : xAcc,
-                 (fieldToDouble y) : yAcc)
+      x:y:[] -> (fieldToDouble x : xAcc,
+                 fieldToDouble y : yAcc)
       _ -> error "Expected two colums per row"
       where fieldToDouble field =
               case BD.readDouble field of
                 Nothing -> error $ "Couldn't parse field" ++
-                           (Text.unpack (decodeUtf8 field))
+                           Text.unpack (decodeUtf8 field)
                 Just (value, _) -> value
 
 -- Fit the regression line
