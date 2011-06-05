@@ -1,10 +1,10 @@
 TEX = pdflatex --shell-escape
 
 DATA = farm.csv
-PLOT = farm_plot.eps
+PLOT = farm-plot.eps
 PLOTTER = farm.py
-DOC = farm.tex
-OUT = farm.pdf
+DOC = farm-python.tex
+OUT = farm-python.pdf
 
 $(OUT): $(DOC) $(PLOT)
 

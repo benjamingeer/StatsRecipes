@@ -6,8 +6,8 @@ PLOTTER = farm
 PLOTTER_SRC = Farm.hs
 GNUPLOT_SCRIPT_TEMPLATE = farm-plot.template
 GNUPLOT_SCRIPT = farm-plot.gp
-DOC = farm.tex
-OUT = farm.pdf
+DOC = farm-haskell.tex
+OUT = farm-haskell.pdf
 
 $(OUT): $(DOC) $(PLOT)
 
