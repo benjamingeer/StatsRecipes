@@ -59,8 +59,13 @@ def get_options():
             output_file = a
         else:
             assert False, "unhandled option"
-    
-    return data_file, output_file
+
+    if data_file is None:
+        assert False, "data filename required"
+    elif output_file is None:
+        assert False, "output filename required"
+    else:
+        return data_file, output_file
 
 # Parse the numbers in the data file
 def read_data(data_file):
