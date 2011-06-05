@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Main where
 
 {-
@@ -15,99 +17,65 @@ approach is actually much simpler and clearer.)
 
 -}
 
-import Data.List
-import Data.Maybe (maybe)
-import System.Environment (getArgs)
-import System.Console.GetOpt
+import System.Console.CmdArgs.Implicit
 import Text.CSV.ByteString (CSV, parseCSV)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lex.Double as BD
 import qualified Data.Text as Text
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
+import Data.Text.Encoding (decodeUtf8)
 import qualified Data.Packed.Vector as Vector
 import qualified Numeric.GSL.Fitting.Linear as Linear
 import qualified Text.StringTemplate as Templ
 
 main = do
   -- Get the command line args
-  args <- getArgs
-  let opts = getPlotOpts args
-  let dataFile = getDataFile opts
-  let templateFile = getTemplateFile opts
-  let scriptFile = getScriptFile opts
-  let outputFile = getOutputFile opts
-  
+  args <- cmdArgs farm
+  checkArgs args
+
   -- Read the data file
-  csvStr <- B.readFile dataFile
+  csvStr <- B.readFile (dataFile args)
   let (xs, ys) = case parseCSV csvStr of
-        Nothing -> error $ "Couldn't parse CSV file" ++ dataFile
+        Nothing -> error $ "Couldn't parse CSV file" ++ (dataFile args)
         Just csv -> csvToDoubles csv
         
   -- Do the calculation
   let (intercept, slope) = linearRegression xs ys
   
   -- Generate a gnuplot script
-  let strAttrs = [ ("outputFile", outputFile),
+  let strAttrs = [ ("outputFile", outputFile args),
                    ("intercept", show intercept),
                    ("slope", show slope), 
-                   ("dataFile", dataFile) ]
-  templateStr <- readFile templateFile
+                   ("dataFile", dataFile args) ]
+  templateStr <- readFile (templateFile args)
   let template = Templ.setManyAttrib strAttrs (Templ.newSTMP templateStr)
-  writeFile scriptFile (Templ.render template)
+  writeFile (scriptFile args) (Templ.render template)
   
   
 -- Command-line option processing
+
+data Farm = Farm { dataFile :: String,
+                   templateFile :: String,
+                   scriptFile :: String,
+                   outputFile :: String }
+          deriving (Data,Typeable,Show,Eq)
   
-data Flag = DataFile String |
-            TemplateFile String |
-            ScriptFile String |
-            OutputFile String
-          deriving Show
+farm = Farm {
+  dataFile = def &= explicit &= name "d" &= name "data" &= typFile
+             &= help "data file in CSV format",
+  templateFile = def &= explicit &= name "t" &= name "template" &= typFile
+                 &= help "template file",
+  scriptFile = def &= explicit &= name "s" &= name "script" &= typFile
+               &= help "gnuplot script file to generate",
+  outputFile = def &= explicit &= name "o" &= name "output" &= typFile
+               &= help "LaTeX output file to generate" }
 
-options :: [OptDescr Flag]
-options =
-  [ Option "d"  ["data"]   (ReqArg DataFile "FILE") "data FILE",
-    Option "t"  ["template"] (ReqArg TemplateFile "FILE") "template FILE",
-    Option "s"  ["script"] (ReqArg ScriptFile "FILE") "script FILE",
-    Option "o"  ["output"] (ReqArg OutputFile "FILE") "output FILE" ]
-
-getPlotOpts :: [String] -> [Flag]
-getPlotOpts args =
-  case getOpt Permute options args of
-    (o, [], []) -> o
-    (_, _, errs) -> usageError (concat errs)
-
-usageError s =
-  error (s ++ usageInfo header options)
-    where header = "Usage: Farm [OPTION...]"
-
-getDataFile :: [Flag] -> String
-getDataFile opts =
-  maybe (usageError "data filename required\n")
-  (\(DataFile val) -> val) (find finder opts)
-    where finder (DataFile _) = True
-          finder _ = False
-
-getTemplateFile :: [Flag] -> String
-getTemplateFile opts =
-  maybe (usageError "template filename required\n")
-  (\(TemplateFile val) -> val) (find finder opts)
-    where finder (TemplateFile _) = True
-          finder _ = False
-
-getScriptFile :: [Flag] -> String
-getScriptFile opts =
-  maybe (usageError "script filename required\n")
-  (\(ScriptFile val) -> val) (find finder opts)
-    where finder (ScriptFile _) = True
-          finder _ = False
-
-getOutputFile :: [Flag] -> String
-getOutputFile opts =
-  maybe (usageError "output filename required\n")
-  (\(OutputFile val) -> val) (find finder opts)
-    where finder (OutputFile _) = True
-          finder _ = False
+checkArgs :: Farm -> IO ()
+checkArgs args
+  | dataFile args == "" = error "data filename required"
+  | templateFile args == "" = error "template filename required"
+  | scriptFile args == "" = error "script filename required"
+  | outputFile args == "" = error "output filename required"
+  | otherwise = return ()
 
 -- Parse the numbers in the data file
 csvToDoubles :: CSV -> ([Double], [Double])
