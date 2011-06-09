@@ -42,12 +42,12 @@ main = do
   let (intercept, slope) = linearRegression xs ys
   
   -- Generate a gnuplot script
-  let strAttrs = [ ("outputFile", outputFile args),
-                   ("intercept", show intercept),
-                   ("slope", show slope), 
-                   ("dataFile", dataFile args) ]
+  let attrs = [ ("outputFile", outputFile args),
+                ("intercept", show intercept),
+                ("slope", show slope), 
+                ("dataFile", dataFile args) ]
   templateStr <- readFile (templateFile args)
-  let template = Templ.setManyAttrib strAttrs (Templ.newSTMP templateStr)
+  let template = Templ.setManyAttrib attrs (Templ.newSTMP templateStr)
   writeFile (scriptFile args) (Templ.render template)
   
   
@@ -57,7 +57,7 @@ data Farm = Farm { dataFile :: String,
                    templateFile :: String,
                    scriptFile :: String,
                    outputFile :: String }
-          deriving (Data,Typeable,Show,Eq)
+          deriving (Data, Typeable, Show, Eq)
   
 farm = Farm {
   dataFile = def &= explicit &= name "d" &= name "data" &= typFile
