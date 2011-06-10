@@ -71,10 +71,10 @@ farm = Farm {
 
 checkArgs :: Farm -> IO ()
 checkArgs args
-  | dataFile args == "" = error "data filename required"
-  | templateFile args == "" = error "template filename required"
-  | scriptFile args == "" = error "script filename required"
-  | outputFile args == "" = error "output filename required"
+  | null (dataFile args) = error "data filename required"
+  | null (templateFile args) = error "template filename required"
+  | null (scriptFile args) = error "script filename required"
+  | null (outputFile args) = error "output filename required"
   | otherwise = return ()
 
 -- Parse the numbers in the data file
