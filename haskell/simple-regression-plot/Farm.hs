@@ -73,17 +73,16 @@ farm = Farm {
   outputFile = def &= explicit &= name "o" &= name "output" &= typFile
                &= help "LaTeX output file to generate" }
 
-checkArg :: Farm -> String -> String -> Writer [String] Farm
-checkArg args arg err = do
+checkArg :: String -> String -> Writer [String] ()
+checkArg arg err = do
   tell (if null arg then [err] else [])
-  return args
 
 checkArgs :: Farm -> Writer [String] Farm
 checkArgs args = do
-  checkArg args (dataFile args) "data filename required"
-  checkArg args (templateFile args) "template filename required"
-  checkArg args (scriptFile args) "script filename required"
-  checkArg args (outputFile args) "output filename required"
+  checkArg (dataFile args) "data filename required"
+  checkArg (templateFile args) "template filename required"
+  checkArg (scriptFile args) "script filename required"
+  checkArg (outputFile args) "output filename required"
   return args
 
 -- Parse the numbers in the data file
