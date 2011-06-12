@@ -22,12 +22,11 @@ import Control.Monad (unless)
 import Text.CSV.ByteString (CSV, parseCSV)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lex.Double as BD
-import qualified Data.Text as Text
+import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import qualified Data.Packed.Vector as Vector
 import qualified Numeric.GSL.Fitting.Linear as Linear
 import qualified Text.StringTemplate as Tpl
-import System.FilePath (splitExtension)
 
 main = do
   -- Get the command line args
@@ -49,14 +48,11 @@ main = do
                 ("intercept", show intercept),
                 ("slope", show slope), 
                 ("dataFile", dataFile args) ]
-  templates <- Tpl.directoryGroup "." :: IO (Tpl.STGroup B.ByteString)
-  let Just template = Tpl.getStringTemplate
-                      (fst (splitExtension (templateFile args)))
-                      templates
+  tplStr <- B.readFile (templateFile args)
+  let tpl = Tpl.newSTMP $ T.unpack $ decodeUtf8 $ tplStr
   B.writeFile (scriptFile args)
-    (Tpl.render (Tpl.setManyAttrib attrs template))
+    (encodeUtf8 (T.pack (Tpl.render (Tpl.setManyAttrib attrs tpl))))
 
-  
 -- Command-line option processing
 
 data Farm = Farm { dataFile :: String,
@@ -93,7 +89,7 @@ csvToDoubles csv =
       where fieldToDouble field =
               case BD.readDouble field of
                 Nothing -> error $ "Couldn't parse field" ++
-                           Text.unpack (decodeUtf8 field)
+                           T.unpack (decodeUtf8 field)
                 Just (value, _) -> value
 
 -- Fit the regression line
