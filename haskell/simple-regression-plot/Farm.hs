@@ -49,7 +49,7 @@ main = do
                 ("intercept", show intercept),
                 ("slope", show slope), 
                 ("dataFile", dataFile args) ]
-  templates <- Tpl.directoryGroup "./" :: IO (Tpl.STGroup B.ByteString)
+  templates <- Tpl.directoryGroup "." :: IO (Tpl.STGroup B.ByteString)
   let Just template = Tpl.getStringTemplate
                       (fst (splitExtension (templateFile args)))
                       templates
