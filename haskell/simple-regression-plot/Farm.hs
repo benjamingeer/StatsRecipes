@@ -18,6 +18,7 @@ approach is actually much simpler and clearer.)
 -}
 
 import System.Console.CmdArgs.Implicit
+import Control.Monad.Writer.Lazy (Writer, execWriter, tell)
 import Text.CSV.ByteString (CSV, parseCSV)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lex.Double as BD
@@ -30,7 +31,10 @@ import qualified Text.StringTemplate as Templ
 main = do
   -- Get the command line args
   args <- cmdArgs farm
-  checkArgs args
+  let errs = execWriter (checkArgs args) in
+    if not (null errs) then
+      error (unlines errs)
+    else return ()
 
   -- Read the data file
   csvStr <- B.readFile (dataFile args)
@@ -69,13 +73,18 @@ farm = Farm {
   outputFile = def &= explicit &= name "o" &= name "output" &= typFile
                &= help "LaTeX output file to generate" }
 
-checkArgs :: Farm -> IO ()
-checkArgs args
-  | null (dataFile args) = error "data filename required"
-  | null (templateFile args) = error "template filename required"
-  | null (scriptFile args) = error "script filename required"
-  | null (outputFile args) = error "output filename required"
-  | otherwise = return ()
+checkArg :: Farm -> String -> String -> Writer [String] Farm
+checkArg args arg err = do
+  tell (if null arg then [err] else [])
+  return args
+
+checkArgs :: Farm -> Writer [String] Farm
+checkArgs args = do
+  checkArg args (dataFile args) "data filename required"
+  checkArg args (templateFile args) "template filename required"
+  checkArg args (scriptFile args) "script filename required"
+  checkArg args (outputFile args) "output filename required"
+  return args
 
 -- Parse the numbers in the data file
 csvToDoubles :: CSV -> ([Double], [Double])
