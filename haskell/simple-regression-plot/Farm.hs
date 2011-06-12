@@ -49,7 +49,7 @@ main = do
                 ("slope", show slope), 
                 ("dataFile", dataFile args) ]
   tplStr <- B.readFile (templateFile args)
-  let tpl = Tpl.newSTMP $ T.unpack $ decodeUtf8 $ tplStr
+  let tpl = Tpl.newSTMP (T.unpack (decodeUtf8 tplStr))
   B.writeFile (scriptFile args)
     (encodeUtf8 (T.pack (Tpl.render (Tpl.setManyAttrib attrs tpl))))
 
