@@ -9,7 +9,7 @@ linear regression and generates a gnuplot script that will plot the
 data as a scatterplot along with the regression line. Uses the Haskell
 wrapper for the GNU Scientific Library to do the linear
 regression. Generates the gnuplot script from a template using
-HStringTemplate. The generated gnuplot script uses gnuplot's epslatex
+HStringTmplate. The generated gnuplot script uses gnuplot's epslatex
 terminal to produce LaTeX with Embedded PostScript, which can then be
 included in a LaTeX document. (I tried the Haskell gnuplot wrapper,
 but it doesn't support the epslatex terminal, and in any case this
@@ -23,10 +23,11 @@ import Text.CSV.ByteString (CSV, parseCSV)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lex.Double as BD
 import qualified Data.Text as Text
-import Data.Text.Encoding (decodeUtf8)
+import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import qualified Data.Packed.Vector as Vector
 import qualified Numeric.GSL.Fitting.Linear as Linear
-import qualified Text.StringTemplate as Templ
+import qualified Text.StringTemplate as Tpl
+import System.FilePath (splitExtension)
 
 main = do
   -- Get the command line args
@@ -48,10 +49,13 @@ main = do
                 ("intercept", show intercept),
                 ("slope", show slope), 
                 ("dataFile", dataFile args) ]
-  templateStr <- readFile (templateFile args)
-  let template = Templ.setManyAttrib attrs (Templ.newSTMP templateStr)
-  writeFile (scriptFile args) (Templ.render template)
-  
+  templates <- Tpl.directoryGroup "./" :: IO (Tpl.STGroup B.ByteString)
+  let Just template = Tpl.getStringTemplate
+                      (fst (splitExtension (templateFile args)))
+                      templates
+  B.writeFile (scriptFile args)
+    (Tpl.render (Tpl.setManyAttrib attrs template))
+
   
 -- Command-line option processing
 
