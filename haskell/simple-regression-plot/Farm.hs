@@ -18,7 +18,7 @@ approach is actually much simpler and clearer.)
 -}
 
 import System.Console.CmdArgs.Implicit
-import Control.Monad.Writer.Lazy (Writer, execWriter, tell)
+import Control.Monad (unless)
 import Text.CSV.ByteString (CSV, parseCSV)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lex.Double as BD
@@ -31,15 +31,13 @@ import qualified Text.StringTemplate as Templ
 main = do
   -- Get the command line args
   args <- cmdArgs farm
-  let errs = execWriter (checkArgs args) in
-    if not (null errs) then
-      error (unlines errs)
-    else return ()
+  let errs = checkArgs args in
+    unless (null errs) $ error (unlines errs)
 
   -- Read the data file
   csvStr <- B.readFile (dataFile args)
   let (xs, ys) = case parseCSV csvStr of
-        Nothing -> error $ "Couldn't parse CSV file" ++ (dataFile args)
+        Nothing -> error $ "Couldn't parse CSV file" ++ dataFile args
         Just csv -> csvToDoubles csv
         
   -- Do the calculation
@@ -73,17 +71,12 @@ farm = Farm {
   outputFile = def &= explicit &= name "o" &= name "output" &= typFile
                &= help "LaTeX output file to generate" }
 
-checkArg :: String -> String -> Writer [String] ()
-checkArg arg err = do
-  tell (if null arg then [err] else [])
-
-checkArgs :: Farm -> Writer [String] Farm
-checkArgs args = do
-  checkArg (dataFile args) "data filename required"
-  checkArg (templateFile args) "template filename required"
-  checkArg (scriptFile args) "script filename required"
-  checkArg (outputFile args) "output filename required"
-  return args
+checkArgs :: Farm -> [String]
+checkArgs args =
+  ["data filename required" | null (dataFile args)] ++
+  ["template filename required" | null (templateFile args)] ++
+  ["script filename required" | null (scriptFile args)] ++
+  ["output filename required" | null (outputFile args)]
 
 -- Parse the numbers in the data file
 csvToDoubles :: CSV -> ([Double], [Double])
