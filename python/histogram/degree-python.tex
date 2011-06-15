@@ -1,12 +1,10 @@
 \documentclass[a4paper]{article}
-\usepackage{amsmath, amsthm, amssymb}
-\usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{verbatim}
 \usepackage[british]{babel}
 
-\title{A Test of Using Gnuplot with Haskell}
+\title{A Test of Matplotlib}
 \author{Benjamin Geer}
 
 \begin{document}
@@ -14,8 +12,10 @@
 \maketitle
 
 \begin{figure}[h]
-\input{farm-plot}
-\caption{US Farm Population by Year}
+\begin{center}
+\includegraphics[width=\columnwidth]{degree-plot}
+\caption{Histogram of Bachelor's Degrees in US States}
+\end{center}
 \label{fig:farm}
 \end{figure}
 

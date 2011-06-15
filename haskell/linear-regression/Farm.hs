@@ -1,7 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Main where
-
 {-
 
 Reads x and y values from a two-column CSV file, does a least-squares
@@ -16,6 +14,8 @@ but it doesn't support the epslatex terminal, and in any case this
 approach is actually much simpler and clearer.)
 
 -}
+
+module Main where
 
 import System.Console.CmdArgs.Implicit
 import Control.Monad (unless)
@@ -37,7 +37,7 @@ main = do
   -- Read the data file
   csvStr <- B.readFile (dataFile args)
   let (xs, ys) = case parseCSV csvStr of
-        Nothing -> error $ "Couldn't parse CSV file" ++ dataFile args
+        Nothing -> error $ "Couldn't parse CSV file " ++ dataFile args
         Just csv -> csvToDoubles csv
         
   -- Do the calculation
@@ -85,10 +85,10 @@ csvToDoubles csv =
     convRow row (xAcc, yAcc) = case row of
       x:y:[] -> (fieldToDouble x : xAcc,
                  fieldToDouble y : yAcc)
-      _ -> error "Expected two colums per row"
+      _ -> error "Expected two columns per row"
       where fieldToDouble field =
               case BD.readDouble field of
-                Nothing -> error $ "Couldn't parse field" ++
+                Nothing -> error $ "Couldn't parse field " ++
                            T.unpack (decodeUtf8 field)
                 Just (value, _) -> value
 
