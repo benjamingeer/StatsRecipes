@@ -16,4 +16,4 @@ $(PLOT): $(DATA) $(PLOTTER)
 	$(TEX) $<
 
 clean:
-	rm -f *.aux *.log *.eps *.pdf *~
+	rm -f $(PLOT) *.aux *.log *.eps *.pdf *~
