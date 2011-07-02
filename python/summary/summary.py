@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import numpy
 import scipy.stats as stats
 
@@ -13,10 +14,11 @@ class Desc:
         self.max = a.max()
         self.std_dev = a.std(ddof = 1)
 
-data = numpy.array([17.2, 18.1, 16.5, 18.3, 12.6])
-
 def main():
+    data_file = sys.argv[1]
+    data = read_data(data_file)
     d = Desc(data)
+
     print "Minimum: %.2f" % d.min
     print "First quartile: %.2f" % d.q1
     print "Median: %.2f" % d.median
@@ -24,6 +26,15 @@ def main():
     print "Third quartile: %.2f" % d.q3
     print "Maximum: %.2f" % d.max
     print "Standard deviation: %.3f" % d.std_dev
+
+# Parse the numbers in the data file
+def read_data(data_file):
+    try:
+        with open(data_file, "rb") as f:
+            return numpy.array(map(float, f))
+    except IOError as (errno, strerror):
+        print "Error reading {0}: {1}" . format(data_file, strerror)
+        sys.exit()
 
 if __name__ == "__main__":
     main()
