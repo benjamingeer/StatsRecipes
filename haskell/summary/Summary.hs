@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-
 {-
 
 Prints out some summary statistics about an array of data.
