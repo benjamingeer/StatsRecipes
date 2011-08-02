@@ -1,5 +1,5 @@
-PROGRAM = cdf
-PROGRAM_SRC = CDF.hs
+PROGRAM = normal
+PROGRAM_SRC = Normal.hs
 
 run: $(PROGRAM)
 	./$(PROGRAM)
