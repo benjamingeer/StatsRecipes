@@ -15,6 +15,9 @@ class Desc:
         self.std_dev = a.std(ddof = 1)
 
 def main():
+    if len(sys.argv) < 2:
+        assert False, "Expected data file"
+
     data_file = sys.argv[1]
     data = read_data(data_file)
     d = Desc(data)

@@ -16,6 +16,9 @@ import numpy
 import scipy.stats as stats
 
 def main():
+    if len(sys.argv) < 2:
+        assert False, "Expected data file"
+
     data_file = sys.argv[1]
     data = read_data(data_file)
 
