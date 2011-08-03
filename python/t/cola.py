@@ -30,10 +30,10 @@ def main():
     print "Sample standard deviation: %.4f" % s
 
     se = s / math.sqrt(n)
-    t_stat = x_bar / se
-    print "One-stample t statistic: %.4f" % t_stat
+    t = x_bar / se
+    print "One-stample t statistic: %.4f" % t
 
-    p = stats.t.sf(t_stat, n - 1)
+    p = stats.t.sf(t, n - 1)
     print "P: %.4f" % p
 
 def read_data(data_file):
