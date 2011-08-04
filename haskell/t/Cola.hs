@@ -35,10 +35,10 @@ main = do
   printf "Sample standard deviation: %.4f\n" s
   
   let se = s / sqrt n
-  let tStat = xBar / se
-  printf "One-stample t statistic: %.4f\n" tStat
+  let t = xBar / se
+  printf "One-stample t statistic: %.4f\n" t
   
-  let p = density_1p TDist Upper (n - 1.0) tStat
+  let p = density_1p TDist Upper (n - 1.0) t
   printf "P: %.4f\n" p
 
 readData :: String -> IO [Double]

@@ -34,14 +34,14 @@ main = do
   let s = Stat.stddev_m xBar v
   printf "Sample standard deviation: %.4f\n" s
   
-  let tStar = density_1p TDist UppInv (n - 1.0) ((1.0 - 0.95) / 2.0)
-  printf "t*: %.4f\n" tStar
+  let t = density_1p TDist UppInv (n - 1.0) ((1.0 - 0.95) / 2.0)
+  printf "t: %.4f\n" t
   
   let se = s / sqrt n
-  let absErr = tStar * se
+  let absErr = t * se
   let lowerLim = xBar - absErr
   let upperLim = xBar + absErr
-  printf "Confidence interval: %.4f to %.4f\n" lowerLim upperLim
+  printf "95%% confidence interval: %.4f to %.4f\n" lowerLim upperLim
 
 readData :: String -> IO [Double]
 readData dataFile = do

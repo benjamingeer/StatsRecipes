@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Statistics using the t distribution with two samples.
+# A two-sample Welch's t test.
 #
 # Problem: How quickly do synthetic fabrics such as polyester decay in
 # landfills? A researcher buried polyester strips in the soil for
@@ -20,6 +20,10 @@
 # This implementation uses the formulas given on
 # <http://en.wikipedia.org/wiki/Welch%27s_t_test> and seems to give
 # the same results as the t.test function in R.
+#
+# We can't use scipy.stats.ttest_ind, because it uses n1 + n2 - 2
+# degrees of freedom, which is correct only if the two samples have
+# equal variances.
 
 import sys
 import math
@@ -36,23 +40,24 @@ def main():
     sample1 = read_data(sample1_file)
     sample2 = read_data(sample2_file)
 
-    t, df, p, lower_lim, upper_lim = welch_t_test(sample1,
-                                                  sample2,
-                                                  alternative="greater",
-                                                  c=0.90)
+    t, df, p, lower_lim, upper_lim = welch_test(sample1,
+                                                sample2,
+                                                alternative="greater",
+                                                c=0.90)
     print "t: %.4f" % t
     print "Degrees of freedom: %.4f" % df
     print "P: %.4f" % p
     print "90%% confidence interval: %.4f to %.4f" % (lower_lim, upper_lim)
 
 
-# Performs Welch's two-sample t-test on two numpy arrays. Returns a
-# tuple containing the t-value, the degrees of freedom, the
-# probability, and the upper and lower limits of a confidence interval
-# (95% by default).  The keyword argument "alternative" can be "less",
-# "greater" or "two.sided" (the default), depending on the alternative
-# hypothesis.
-def welch_t_test(a1, a2, alternative="two.sided", c=0.95):
+# Performs Welch's two-sample t-test on two lists and calculates a
+# confidence interval, given the expected difference between the
+# population means (μ1 - μ2, default 0), the alternative hypothesis
+# ("less", "greater" or the default "two.sided") and the confidence
+# level (default 0.95). Returns a tuple containing the t-value, the
+# degrees of freedom, the probability, and the upper and lower limits
+# of the confidence interval.
+def welch_test(a1, a2, delta_mu=0, alternative="two.sided", c=0.95):
     n1 = len(a1)
     n2 = len(a2)
     x1_bar = a1.mean()
@@ -60,7 +65,7 @@ def welch_t_test(a1, a2, alternative="two.sided", c=0.95):
     var1 = a1.var(ddof = 1)
     var2 = a2.var(ddof = 1)
 
-    test_t = (x1_bar - x2_bar) / sqrt((var1 / n1) + (var2 / n2))
+    test_t = ((x1_bar - x2_bar) - delta_mu) / sqrt((var1 / n1) + (var2 / n2))
 
     df = ((var1 / n1) + (var2 / n2))**2 / ((var1**2 / (n1**2 * (n1 - 1))) +
                                            (var2**2 / (n2**2 * (n2 - 1))))
