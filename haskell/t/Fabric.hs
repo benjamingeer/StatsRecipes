@@ -42,13 +42,13 @@ main = do
   sample1 <- readData file1
   sample2 <- readData file2
   
-  let (t, df, p, lower_lim, upper_lim) = welchTest sample1
-                                         sample2 0 Greater 0.90
+  let (t, df, p, lowerLim, upperLim) = welchTest sample1
+                                       sample2 0 Greater 0.90
                                          
   printf "t: %.4f\n" t
   printf "Degrees of freedom: %.4f\n" df
   printf "P: %.4f\n" p
-  printf "90%% confidence interval: %.4f to %.4f\n" lower_lim upper_lim
+  printf "90%% confidence interval: %.4f to %.4f\n" lowerLim upperLim
 
 
 {-
