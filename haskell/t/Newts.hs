@@ -7,7 +7,9 @@ which new cells closed a razor cut made in the skin of an anesthetized
 newt. The file newts.csv contains data from 18 newts, measured in
 micrometers per hour. The population distribution is Normal. Estimate
 the mean rate μ for all newts of this species by giving a 95%
-confidence interval.
+confidence interval. (Moore, David S. The Basic Practice of
+Statistics. 4th ed. New York: W. H. Freeman, 2007, pp. 437-438,
+example 18.2.)
 
 -}
 

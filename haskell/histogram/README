@@ -1,0 +1,11 @@
+Problem: The file degree.csv contains data on the percent of
+population aged 25 and over with a bachelor’s degree in each US
+state. Make a histogram of this data. (Moore, David S. The Basic
+Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
+pp. 11-12, example 1.5.)
+
+Here we use Gnuplot to generate the histogram, which we then include
+in a LaTeX document. Gnuplot can generate the plot just fine by
+itself, so there's no Haskell in this example.
+
+Cf. the "hist" function in R.

@@ -5,7 +5,8 @@ from scipy.stats import binom
 # Problem 1: Each child born to a particular set of parents has
 # probability 0.25 of having blood type O. If these parents have 5
 # children, what is the probability that exactly 2 of them have type O
-# blood?
+# blood? (Moore, David S. The Basic Practice of Statistics. 4th
+# ed. New York: W. H. Freeman, 2007, p. 329, example 13.4.)
 
 p1Prob = binom.pmf(2, 5, 0.25)
 
@@ -16,6 +17,9 @@ p1Prob = binom.pmf(2, 5, 0.25)
 # number X of CDs with defective copy protection has approximately the
 # binomial distribution with n = 10 and p = 0.1. What is the
 # probability that the sample contains no more than 1 defective CD?
+# (Moore, David S. The Basic Practice of Statistics. 4th ed. New York:
+# W. H. Freeman, 2007, pp. 327-28 and 330-331, examples 13.3 and
+# 13.5.)
 
 p2Prob = binom.cdf(1, 10, 0.1)
 p2Mean = binom.mean(10, 0.1)

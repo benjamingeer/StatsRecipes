@@ -8,7 +8,9 @@
 # anesthetized newt. The file newts.csv contains data from 18 newts,
 # measured in micrometers per hour. The population distribution is
 # Normal. Estimate the mean rate μ for all newts of this species by
-# giving a 95% confidence interval.
+# giving a 95% confidence interval. (Moore, David S. The Basic
+# Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
+# pp. 437-438, example 18.2.)
 
 import sys
 import math
@@ -16,7 +18,7 @@ import numpy
 import scipy.stats as stats
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 2:
         assert False, "Expected data file"
 
     data_file = sys.argv[1]

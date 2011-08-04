@@ -2,16 +2,19 @@
 
 {-
 
-Reads x and y values from a two-column CSV file, does a least-squares
-linear regression and generates a gnuplot script that will plot the
-data as a scatterplot along with the regression line. Uses the Haskell
-wrapper for the GNU Scientific Library to do the linear
-regression. Generates the gnuplot script from a template using
-HStringTmplate. The generated gnuplot script uses gnuplot's epslatex
-terminal to produce LaTeX with Embedded PostScript, which can then be
-included in a LaTeX document. (I tried the Haskell gnuplot wrapper,
-but it doesn't support the epslatex terminal, and in any case this
-approach is actually much simpler and clearer.)
+Problem: The file farm.csv contains data on the US farm population
+(millions of persons) from 1935 to 1980. Make a scatterplot of these
+data and include the least-squares regression line of farm population
+on year. (Moore, David S. The Basic Practice of Statistics. 4th
+ed. New York: W. H. Freeman, 2007, p. 133, exercise 5.9.)
+
+Here we use a template to generate a gnuplot script that generates the
+plot, which will then be included in a LaTeX document. (I tried the
+Haskell gnuplot wrapper, but it doesn't support the epslatex terminal,
+and in any case this approach is actually much simpler and clearer.)
+
+Cf. the "plot", "lm" and "abline" functions in R:
+<http://www.statmethods.net/graphs/scatterplot.html>.
 
 -}
 

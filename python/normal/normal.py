@@ -2,7 +2,8 @@
 
 # If women's height has the N(64, 2.7) distribution, what is the
 # probability that a randomly chosen woman has height between 68 and
-# 70 inches?
+# 70 inches? (Moore, David S. The Basic Practice of Statistics. 4th
+# ed. New York: W. H. Freeman, 2007, pp. 258-259, example 10.9.)
 
 import numpy
 import scipy.stats as stats

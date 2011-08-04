@@ -7,7 +7,8 @@ storage. Trained tasters rate the sweetness before and after
 storage. File cola.csv contains the sweetness losses (sweetness before
 storage minus sweetness after storage) found by 10 tasters for one new
 cola recipe. Are these data good evidence that the cola lost
-sweetness?
+sweetness? (Moore, David S. The Basic Practice of Statistics. 4th
+ed. New York: W. H. Freeman, 2007, pp. 440-441, example 18.3.)
 
 -}
 

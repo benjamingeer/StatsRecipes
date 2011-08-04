@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# A two-sample Welch's t test.
+# A two-sample Welch's t test, along with a confidence interval.
 #
 # Problem: How quickly do synthetic fabrics such as polyester decay in
 # landfills? A researcher buried polyester strips in the soil for
@@ -15,15 +15,17 @@
 # evidence that mean breaking strength is less after 16 weeks than
 # after 2 weeks? Give a one-sided P-value for the null hypothesis, and
 # a 90% confidence interval for the difference between the sample
-# means.
+# means. (Moore, David S. The Basic Practice of Statistics. 4th
+# ed. New York: W. H. Freeman, 2007, pp. 463 and 466-468, examples
+# 19.2, 19.3 and 19.4.)
 #
-# This implementation uses the formulas given on
-# <http://en.wikipedia.org/wiki/Welch%27s_t_test> and seems to give
-# the same results as the t.test function in R.
-#
-# We can't use scipy.stats.ttest_ind, because it uses n1 + n2 - 2
-# degrees of freedom, which is correct only if the two samples have
-# equal variances.
+# This procedure doesn't seem to be implemented in any library, so we
+# implement it here using the formulas given on
+# <http://en.wikipedia.org/wiki/Welch%27s_t_test>. This gives the same
+# results as the t.test function in R. We can't use
+# scipy.stats.ttest_ind, because it uses n1 + n2 - 2 degrees of
+# freedom, which is correct only if the two samples have equal
+# variances.
 
 import sys
 import math

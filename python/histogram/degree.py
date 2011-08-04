@@ -1,5 +1,17 @@
 #!/usr/bin/env python
 
+# Problem: The file degree.csv contains data on the percent of
+# population aged 25 and over with a bachelor’s degree in each US
+# state. Make a histogram of this data. (Moore, David S. The Basic
+# Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
+# pp. 11-12, example 1.5.)
+#
+# Here we use Matplotlib's TeX renderer to generate the plot as an
+# Embedded PostScript file, which will then be included in a LaTeX
+# document.
+#
+# Cf. the "hist" function in R.
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy

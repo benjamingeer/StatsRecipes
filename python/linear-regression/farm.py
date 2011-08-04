@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 
-# Reads x and y values from a two-column CSV file, does a
-# least-squares linear regression using SciPy and plots the data as a
-# scatterplot along with the regression line. Uses Matplotlib's TeX
-# renderer to generate the plot as an Embedded PostScript file, which
-# can then be included in a LaTeX document.
+# Problem: The number of people living on American farms has declined
+# steadily during the last century. The file farm.csv contains data on
+# the farm population (millions of persons) from 1935 to 1980. Make a
+# scatterplot of these data and include the least-squares regression
+# line of farm population on year. (Moore, David S. The Basic Practice
+# of Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 133,
+# exercise 5.9.)
+#
+# Here we use Matplotlib's TeX renderer to generate the plot as an
+# Embedded PostScript file, which will then be included in a LaTeX
+# document.
+#
+# Cf. the "plot", "lm" and "abline" functions in R:
+# <http://www.statmethods.net/graphs/scatterplot.html>.
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt

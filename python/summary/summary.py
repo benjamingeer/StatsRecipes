@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+# Prints summary statistics about a sample. (Moore, David S. The Basic
+# Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
+# p. 43.)
+#
+# Cf. the "summary" function in R.
+
 import sys
 import numpy
 import scipy.stats as stats
@@ -12,10 +18,9 @@ class Desc:
         self.mean = a.mean()
         self.q3 = stats.scoreatpercentile(a, 75)
         self.max = a.max()
-        self.std_dev = a.std(ddof = 1)
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 2:
         assert False, "Expected data file"
 
     data_file = sys.argv[1]
@@ -28,7 +33,6 @@ def main():
     print "Mean: %.2f" % d.mean
     print "Third quartile: %.2f" % d.q3
     print "Maximum: %.2f" % d.max
-    print "Standard deviation: %.3f" % d.std_dev
 
 # Parse the numbers in the data file
 def read_data(data_file):
