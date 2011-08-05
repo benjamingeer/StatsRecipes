@@ -11,6 +11,8 @@ import qualified Numeric.GSL.Statistics as Stat
 import Numeric.GSL.Distribution.Continuous
 import Text.Printf
 
+data Alternative = Less | Greater | TwoSided
+
 {-
 
 Problem 1: If women's height has the N(64, 2.7) distribution, what is
@@ -20,7 +22,7 @@ ed. New York: W. H. Freeman, 2007, pp. 258-259, example 10.9.)
 
 -}
 
-p1 =
+problem1 =
   let mean = 64.0
       stdDev = 2.7
   in (density_1p Gaussian Lower stdDev (70 - mean)) -
@@ -39,7 +41,7 @@ example 20.5.)
 
 -}
 
-p2 = plusFourInterval 97 7 0.95
+problem2 = plusFourInterval 97 7 0.95
 
 {-
 
@@ -53,10 +55,41 @@ plusFourInterval n successes c =
         z = density_1p Gaussian UppInv 1 ((1.0 - c) / 2.0)
         absErr = z * sqrt ((pTilde * (1.0 - pTilde)) / fromIntegral (n + 4))
     in (pTilde - absErr, pTilde + absErr)
+       
+{-
+
+Problem 3: A random sample found 13,173 boys among 25,468 firstborn
+children. The sample proportion of boys was therefore 0.5172. Is this
+sample evidence that boys are more common than girls in the entire
+population? (Moore, David S. The Basic Practice of Statistics. 4th
+ed. New York: W. H. Freeman, 2007, p. 505, example 20.7.
+
+-}
+
+problem3 = sigTestProp 13173 25468 0.5 Greater
+      
+{-
+
+Performs a significance test for a proportion, given the number of
+successes, the size of the sample, the expected proportion in the null
+hypothesis, and the alternative hypothesis. Returns the probability of
+the sample proportion if the null hypothesis is true.
+
+-}
+sigTestProp :: Int -> Int -> Double -> Alternative -> Double
+sigTestProp successes n p0 alternative =
+    let pHat = (fromIntegral successes) / (fromIntegral n)
+        z = (pHat - p0) / sqrt((p0 * (1.0 - p0)) / (fromIntegral n))
+    in case alternative of
+      Less -> density_1p Gaussian Lower 1 z
+      Greater -> density_1p Gaussian Upper 1 z
+      TwoSided -> 2.0 * density_1p Gaussian Upper 1 (abs z)
 
 main = do
-  printf "Problem 1: P = %.4f\n" p1
+  printf "Problem 1: P = %.4f\n" problem1
   
-  let (lowerLim, upperLim) = p2
+  let (lowerLim, upperLim) = problem2
   printf "Problem 2: 95%% confidence interval from %.4f to %.4f\n" lowerLim
     upperLim
+
+  printf "Problem 3: P = %.10f\n" problem3
