@@ -41,7 +41,7 @@ example 20.5.)
 
 -}
 
-problem2 = plusFourOneSampleInterval 97 7 0.95
+problem2 = plusFourOneSampleInterval 7 97 0.95
 
 {-
 
@@ -50,7 +50,7 @@ tuple containing the upper and lower limits of the interval.
 
 -}
 plusFourOneSampleInterval :: Int -> Int -> Double -> (Double, Double)
-plusFourOneSampleInterval n successes c =
+plusFourOneSampleInterval successes n c =
     let pTilde = fromIntegral (successes + 2) / fromIntegral (n + 4)
         z = density_1p Gaussian UppInv 1 ((1.0 - c) / 2.0)
         absErr = z * sqrt ((pTilde * (1.0 - pTilde)) / fromIntegral (n + 4))
