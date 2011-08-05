@@ -27,13 +27,13 @@ def problem_1():
 # example 20.5.)
 
 def problem_2():
-    lower_lim, upper_lim = plus_four_interval(7, 97, 0.95)
+    lower_lim, upper_lim = plus_four_one_sample_interval(7, 97, 0.95)
     print "Problem 2: 95%% confidence interval from %.4f to %.4f" % (lower_lim,
                                                                      upper_lim)
 
 # Calculates a plus-four confidence interval for a proportion. Returns a
 # tuple containing the upper and lower limits of the interval.
-def plus_four_interval(successes, n, c):
+def plus_four_one_sample_interval(successes, n, c):
     p_tilde = float(successes + 2) / float(n + 4)
     z = stats.norm.interval(c)[1]
     abs_err = z * sqrt((p_tilde * (1.0 - p_tilde)) / float(n + 4))
@@ -58,7 +58,6 @@ def problem_3():
 def sig_test_prop(successes, n, p0, alternative="two.sided"):
     p_hat = float(successes) / float(n)
     z = (p_hat - p0) / sqrt((p0 * (1.0 - p0)) / float(n))
-    print "Problem 3: z = %.10f" % z
 
     if alternative == "less":
         probability = stats.norm.cdf(z)
@@ -71,10 +70,52 @@ def sig_test_prop(successes, n, p0, alternative="two.sided"):
 
     return probability
 
+# Problem 4: Some shrubs can resprout from their roots after their
+# tops are destroyed. Fire is a serious threat to shrubs in dry
+# climates, as it can injure the roots as well as destroy the
+# tops. One study of resprouting took place in a dry area of
+# Mexico. The investigators randomly assigned shrubs to treatment and
+# control groups. They clipped the tops of all the shrubs. They then
+# applied a propane torch to the stumps of the treatment group to
+# simulate a fire. A shrub is a success if it resprouts. Here are the
+# data for the shrub Xerospirea hartwegiana:
+#
+#              Population    Sample   Number of      Sample
+# Population   description    size    successes    proportion
+# ------------------------------------------------------------------
+#      1         control       12        12        12/12=1.000
+#      2        treatment      12        8          8/12=0.667
+#
+# How much does burning reduce the proportion of shrubs of this
+# species that resprout? Give a 90% confidence interval for the
+# difference of population proportions, p1 - p2. (Moore, David S. The
+# Basic Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
+# p. 518, example 21.3.)
+
+def problem_4():
+    lower_lim, upper_lim = plus_four_two_sample_interval(12, 12, 8, 12, 0.90)
+    print "Problem 4: 90%% confidence interval from %.4f to %.4f" % (lower_lim,
+                                                                     upper_lim)
+
+# Calculates a plus-four confidence interval for the differences
+# between proportions in two samples. Returns a tuple containing the
+# upper and lower limits of the interval.
+def plus_four_two_sample_interval(successes1, n1, successes2, n2, c):
+    p_tilde1 = float(successes1 + 1) / float(n1 + 2)
+    p_tilde2 = float(successes2 + 1) / float(n2 + 2)
+    se = sqrt(((p_tilde1 * (1.0 - p_tilde1)) / float(n1 + 2)) +
+              ((p_tilde2 * (1.0 - p_tilde2)) / float(n2 + 2)))
+    z = stats.norm.interval(c)[1]
+    diff = p_tilde1 - p_tilde2
+    abs_err = z * se
+    return (diff - abs_err, diff + abs_err)
+
+
 def main():
     problem_1()
     problem_2()
     problem_3()
+    problem_4()
 
 if __name__ == "__main__":
     main()

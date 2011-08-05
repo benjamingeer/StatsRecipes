@@ -85,6 +85,54 @@ sigTestProp successes n p0 alternative =
       Greater -> density_1p Gaussian Upper 1 z
       TwoSided -> 2.0 * density_1p Gaussian Upper 1 (abs z)
 
+{-
+
+Problem 4: Some shrubs can resprout from their roots after their tops
+are destroyed. Fire is a serious threat to shrubs in dry climates, as
+it can injure the roots as well as destroy the tops. One study of
+resprouting took place in a dry area of Mexico. The investigators
+randomly assigned shrubs to treatment and control groups. They clipped
+the tops of all the shrubs. They then applied a propane torch to the
+stumps of the treatment group to simulate a fire. A shrub is a success
+if it resprouts. Here are the data for the shrub Xerospirea
+hartwegiana:
+
+             Population    Sample   Number of      Sample
+Population   description    size    successes    proportion
+------------------------------------------------------------------
+     1         control       12        12        12/12=1.000
+     2        treatment      12        8          8/12=0.667
+
+How much does burning reduce the proportion of shrubs of this species
+that resprout? Give a 90% confidence interval for the difference of
+population proportions, p1 - p2. (Moore, David S. The Basic Practice
+of Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 518, example
+21.3.)
+
+-}
+
+problem4 = plusFourTwoSampleInterval 12 12 8 12 0.90
+
+{-
+
+Calculates a plus-four confidence interval for the differences
+between proportions in two samples. Returns a tuple containing the
+upper and lower limits of the interval.
+
+-}
+plusFourTwoSampleInterval :: Int -> Int -> Int -> Int -> Double ->
+                             (Double, Double)
+plusFourTwoSampleInterval successes1 n1 successes2 n2 c =
+  let pTilde1 = fromIntegral (successes1 + 1) / fromIntegral (n1 + 2)
+      pTilde2 = fromIntegral (successes2 + 1) / fromIntegral (n2 + 2)
+      se = sqrt (((pTilde1 * (1.0 - pTilde1)) / fromIntegral (n1 + 2)) +
+                 ((pTilde2 * (1.0 - pTilde2)) / fromIntegral (n2 + 2)))
+      z = density_1p Gaussian UppInv 1 ((1.0 - c) / 2.0)
+      diff = pTilde1 - pTilde2
+      absErr = z * se
+  in (diff - absErr, diff + absErr)
+
+
 main = do
   printf "Problem 1: P = %.4f\n" problem1
   
@@ -93,3 +141,7 @@ main = do
     upperLim
 
   printf "Problem 3: P = %.10f\n" problem3
+
+  let (lowerLim, upperLim) = problem4
+  printf "Problem 4: 90%% confidence interval from %.4f to %.4f\n" lowerLim
+    upperLim
