@@ -22,24 +22,33 @@ import qualified Numeric.GSL.Statistics as Stat
 import Numeric.GSL.Distribution.Continuous
 import Text.Printf (printf)
 
+{-
+
+Given an array of data and the expected mean in the null hypothesis,
+returns the sample mean, the t statistic and the probability of the
+sample mean if the null hypothesis is true.
+
+-}
+oneSampleTTest :: [Double] -> Double -> (Double, Double, Double)
+oneSampleTTest sample mu0 =
+  let n = fromIntegral (length sample)
+      v = Vector.fromList sample
+      xBar = Stat.mean v
+      s = Stat.stddev_m xBar v
+      se = s / sqrt n
+      t = (xBar - mu0) / se
+      p = density_1p TDist Upper (n - 1.0) t
+  in (xBar, t, p)
+
 main = do
   args <- getArgs
   when (null args) $ error "Expected data file"
-  xs <- readData(head args)
+  sample <- readData(head args)
   
-  let n = fromIntegral (length xs)
-  let v = Vector.fromList xs
-  let xBar = Stat.mean v
+  let (xBar, t, p) = oneSampleTTest sample 0
+
   printf "Sample mean: %.4f\n" xBar
-  
-  let s = Stat.stddev_m xBar v
-  printf "Sample standard deviation: %.4f\n" s
-  
-  let se = s / sqrt n
-  let t = xBar / se
   printf "One-stample t statistic: %.4f\n" t
-  
-  let p = density_1p TDist Upper (n - 1.0) t
   printf "P: %.4f\n" p
 
 readData :: String -> IO [Double]

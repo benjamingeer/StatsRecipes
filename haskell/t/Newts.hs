@@ -23,26 +23,34 @@ import qualified Numeric.GSL.Statistics as Stat
 import Numeric.GSL.Distribution.Continuous
 import Text.Printf (printf)
 
+{-
+
+Given an array of data and a confidence level, returns the sample
+mean, the t statistic, and the lower and upper limits of the t
+confidence interval.
+
+-}
+oneSampleTInterval :: [Double] -> Double -> (Double, Double, Double, Double)
+oneSampleTInterval sample c =
+  let n = fromIntegral (length sample)
+      v = Vector.fromList sample
+      xBar = Stat.mean v
+      s = Stat.stddev_m xBar v
+      t = density_1p TDist UppInv (n - 1.0) ((1.0 - c) / 2.0)
+      se = s / sqrt n
+      absErr = t * se
+      lowerLim = xBar - absErr
+      upperLim = xBar + absErr
+  in (xBar, t, lowerLim, upperLim)
+
 main = do
   args <- getArgs
   when (null args) $ error "Expected data file"
-  xs <- readData(head args)
+  sample <- readData(head args)
   
-  let n = fromIntegral (length xs)
-  let v = Vector.fromList xs
-  let xBar = Stat.mean v
+  let (xBar, t, lowerLim, upperLim) = oneSampleTInterval sample 0.95
   printf "Sample mean: %.4f\n" xBar
-  
-  let s = Stat.stddev_m xBar v
-  printf "Sample standard deviation: %.4f\n" s
-  
-  let t = density_1p TDist UppInv (n - 1.0) ((1.0 - 0.95) / 2.0)
   printf "t: %.4f\n" t
-  
-  let se = s / sqrt n
-  let absErr = t * se
-  let lowerLim = xBar - absErr
-  let upperLim = xBar + absErr
   printf "95%% confidence interval: %.4f to %.4f\n" lowerLim upperLim
 
 readData :: String -> IO [Double]

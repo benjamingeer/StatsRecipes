@@ -17,27 +17,30 @@ import math
 import numpy
 import scipy.stats as stats
 
+# Given an array of data and a confidence level, returns the sample
+# mean, the t statistic, and the lower and upper limits of the t
+# confidence interval.
+def one_sample_t_interval(sample, c):
+    n = len(sample)
+    x_bar = sample.mean()
+    s = sample.std(ddof = 1)
+    t = stats.t.interval(c, n - 1)[1]
+    se = s / math.sqrt(n)
+    abs_err = t * se
+    lower_lim = x_bar - abs_err
+    upper_lim = x_bar + abs_err
+    return (x_bar, t, lower_lim, upper_lim)
+
 def main():
     if len(sys.argv) != 2:
         assert False, "Expected data file"
 
     data_file = sys.argv[1]
-    data = read_data(data_file)
+    sample = read_data(data_file)
 
-    n = len(data)
-    x_bar = data.mean()
+    x_bar, t, lower_lim, upper_lim = one_sample_t_interval(sample, 0.95)
     print "Sample mean: %.4f" % x_bar
-
-    s = data.std(ddof = 1)
-    print "Sample standard deviation: %.4f" % s
-
-    t = stats.t.interval(0.95, n - 1)[1]
     print "t: %.4f" % t
-
-    se = s / math.sqrt(n)
-    abs_err = t * se
-    lower_lim = x_bar - abs_err
-    upper_lim = x_bar + abs_err
     print "95%% confidence interval: %.4f to %.4f" % (lower_lim, upper_lim)
 
 def read_data(data_file):
