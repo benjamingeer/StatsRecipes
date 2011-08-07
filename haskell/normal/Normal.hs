@@ -21,7 +21,6 @@ the probability that a randomly chosen woman has height between 68 and
 ed. New York: W. H. Freeman, 2007, pp. 258-259, example 10.9.)
 
 -}
-
 problem1 =
   let mean = 64.0
       stdDev = 2.7
@@ -40,7 +39,6 @@ Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 500,
 example 20.5.)
 
 -}
-
 problem2 = plusFourOneSampleInterval 7 97 0.95
 
 {-
@@ -65,7 +63,6 @@ population? (Moore, David S. The Basic Practice of Statistics. 4th
 ed. New York: W. H. Freeman, 2007, p. 505, example 20.7.
 
 -}
-
 problem3 = sigTestProp 13173 25468 0.5 Greater
       
 {-
@@ -110,7 +107,6 @@ of Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 518, example
 21.3.)
 
 -}
-
 problem4 = plusFourTwoSampleInterval 12 12 8 12 0.90
 
 {-
@@ -133,6 +129,45 @@ plusFourTwoSampleInterval successes1 n1 successes2 n2 c =
   in (diff - absErr, diff + absErr)
 
 
+{-
+
+Problem 5: "Would you marry a person from a lower social class than
+your own?" Researchers asked this question of a sample of 385 black,
+never-married students at two historically black colleges in the
+South. We will consider this to be an SRS of black students at
+historically black colleges. Of the 149 men in the sample, 91 said
+yes. Among the 236 women, 117 said yes. That is, about 61% of the
+men but only about 50% of the women would marry beneath their
+class. Is this apparent difference statistically significant?
+(Moore, David S. The Basic Practice of Statistics. 4th ed. New York:
+W. H. Freeman, 2007, pp. 520-522, examples 21.4 and 21.5.)
+
+-}
+problem5 = sigTestTwoProps 91 149 117 236 TwoSided
+
+{-
+
+Performs a significance test for comparing two proportions, given the
+number of successes in the first sample, the size of the first sample,
+the number of successes in the second sample, the size of the second
+sample, and the the alternative hypothesis. Returns the probability of
+the sample proportion if the null hypothesis is true.
+
+-}
+sigTestTwoProps :: Int -> Int -> Int -> Int -> Alternative -> Double
+sigTestTwoProps successes1 n1 successes2 n2 alternative =
+  let pHat = fromIntegral (successes1 + successes2) / fromIntegral (n1 + n2)
+      pHat1 = fromIntegral (successes1) / fromIntegral (n1)
+      pHat2 = fromIntegral (successes2) / fromIntegral (n2)
+
+      z = (pHat1 - pHat2) / sqrt (pHat * (1.0 - pHat) *
+                                  ((1.0 / fromIntegral (n1)) +
+                                   (1.0 / fromIntegral (n2))))
+  in case alternative of
+    Less -> density_1p Gaussian Lower 1 z
+    Greater -> density_1p Gaussian Upper 1 z
+    TwoSided -> 2.0 * density_1p Gaussian Upper 1 (abs z)
+
 main = do
   printf "Problem 1: P = %.4f\n" problem1
   
@@ -145,3 +180,5 @@ main = do
   let (lowerLim, upperLim) = problem4
   printf "Problem 4: 90%% confidence interval from %.4f to %.4f\n" lowerLim
     upperLim
+
+  printf "Problem 5: P = %.4f\n" problem5

@@ -9,7 +9,6 @@ import scipy.stats as stats
 # probability that a randomly chosen woman has height between 68 and
 # 70 inches? (Moore, David S. The Basic Practice of Statistics. 4th
 # ed. New York: W. H. Freeman, 2007, pp. 258-259, example 10.9.)
-
 def problem_1():
     mean = 64
     std_dev = 2.7
@@ -25,7 +24,6 @@ def problem_1():
 # a 95% confidence interval. (Moore, David S. The Basic Practice of
 # Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 500,
 # example 20.5.)
-
 def problem_2():
     lower_lim, upper_lim = plus_four_one_sample_interval(7, 97, 0.95)
     print "Problem 2: 95%% confidence interval from %.4f to %.4f" % (lower_lim,
@@ -45,7 +43,6 @@ def plus_four_one_sample_interval(successes, n, c):
 # entire population? (Moore, David S. The Basic Practice of
 # Statistics. 4th ed. New York: W. H. Freeman, 2007, p. 505, example
 # 20.7.)
-
 def problem_3():
     probability = sig_test_prop(13173, 25468, 0.5, alternative="greater")
     print "Problem 3: P = %.10f" % probability
@@ -91,7 +88,6 @@ def sig_test_prop(successes, n, p0, alternative="two.sided"):
 # difference of population proportions, p1 - p2. (Moore, David S. The
 # Basic Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
 # p. 518, example 21.3.)
-
 def problem_4():
     lower_lim, upper_lim = plus_four_two_sample_interval(12, 12, 8, 12, 0.90)
     print "Problem 4: 90%% confidence interval from %.4f to %.4f" % (lower_lim,
@@ -110,12 +106,54 @@ def plus_four_two_sample_interval(successes1, n1, successes2, n2, c):
     abs_err = z * se
     return (diff - abs_err, diff + abs_err)
 
+# Problem 5: "Would you marry a person from a lower social class than
+# your own?" Researchers asked this question of a sample of 385 black,
+# never-married students at two historically black colleges in the
+# South. We will consider this to be an SRS of black students at
+# historically black colleges. Of the 149 men in the sample, 91 said
+# yes. Among the 236 women, 117 said yes. That is, about 61% of the
+# men but only about 50% of the women would marry beneath their
+# class. Is this apparent difference statistically significant?
+# (Moore, David S. The Basic Practice of Statistics. 4th ed. New York:
+# W. H. Freeman, 2007, pp. 520-522, examples 21.4 and 21.5.)
+def problem_5():
+    probability = sig_test_two_props(91, 149, 117, 236,
+                                     alternative="two.sided")
+    print "Problem 5: P = %.4f" % probability
+
+# Performs a significance test for comparing two proportions, given
+# the number of successes in the first sample, the size of the first
+# sample, the number of successes in the second sample, the size of
+# the second sample, and the the alternative hypothesis ("less",
+# "greater" or the default "two.sided"). Returns the probability of
+# the sample proportion if the null hypothesis is true.
+def sig_test_two_props(successes1, n1, successes2, n2,
+                       alternative="two.sided"):
+    p_hat = float(successes1 + successes2) / float(n1 + n2)
+    p_hat1 = float(successes1) / float(n1)
+    p_hat2 = float(successes2) / float(n2)
+
+    z = (p_hat1 - p_hat2) / sqrt(p_hat * (1.0 - p_hat) *
+                                 ((1.0 / float(n1)) + (1.0 / float(n2))))
+
+    if alternative == "less":
+        probability = stats.norm.cdf(z)
+    elif alternative == "greater":
+        probability = stats.norm.sf(z)
+    elif alternative == "two.sided":
+        probability = 2 * stats.norm.sf(abs(z))
+    else:
+        assert False, "Unexpected alternative: " + alternative
+
+    return probability
+    
 
 def main():
     problem_1()
     problem_2()
     problem_3()
     problem_4()
+    problem_5()
 
 if __name__ == "__main__":
     main()
