@@ -7,7 +7,7 @@ DATA_2 = cola.csv
 PROGRAM_3 = fabric.py
 DATA_3 = fabric1.csv fabric2.csv
 
-run: $(PROGRAM_1) $(PROGRAM_2)
+run: $(PROGRAM_1) $(PROGRAM_2) $(PROGRAM_3)
 	./$(PROGRAM_1) $(DATA_1)
 	@echo
 	./$(PROGRAM_2) $(DATA_2)
