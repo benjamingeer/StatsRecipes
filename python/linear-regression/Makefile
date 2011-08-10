@@ -1,15 +1,22 @@
 TEX = pdflatex --shell-escape
 
-DATA = farm.csv
+PLOT_DATA = farm.csv
 PLOT = farm-plot.eps
 PLOTTER = farm.py
-DOC = farm-python.tex
-OUT = farm-python.pdf
+LATEX_DOC = farm-python.tex
+LATEX_OUT = farm-python.pdf
 
-$(OUT): $(DOC) $(PLOT)
+INFERENCE = crying.py
+INFERENCE_DATA = crying.csv
 
-$(PLOT): $(DATA) $(PLOTTER)
-	./$(PLOTTER) --data=$(DATA) --output=$(PLOT)
+all: $(LATEX_OUT) $(INFERENCE)
+	@echo
+	./$(INFERENCE) $(INFERENCE_DATA)
+
+$(LATEX_OUT): $(LATEX_DOC) $(PLOT)
+
+$(PLOT): $(PLOT_DATA) $(PLOTTER)
+	./$(PLOTTER) --data=$(PLOT_DATA) --output=$(PLOT)
 
 %.pdf: %.tex
 	$(TEX) $<
