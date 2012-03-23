@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Problem: The file degree.csv contains data on the percent of
-# population aged 25 and over with a bachelor’s degree in each US
+# population aged 25 and over with a bachelor's degree in each US
 # state. Make a histogram of this data. (Moore, David S. The Basic
 # Practice of Statistics. 4th ed. New York: W. H. Freeman, 2007,
 # pp. 11-12, example 1.5.)
@@ -88,7 +88,7 @@ def read_data(data_file):
     except IOError as (errno, strerror):
         print "Error reading {0}: {1}" . format(filename, strerror)
         sys.exit()
-    
+ 
     return (state, numpy.array(percent))
 
 # Generate the plot

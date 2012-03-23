@@ -104,7 +104,6 @@ def linear_regression(year, pop):
 
 # Generate the plot
 def plot(year, pop, intercept, slope, output_file):
-    plt.axis(xmin = year[0], xmax = year[-1])
     plt.xticks(year)
     scatter_plot = plt.scatter(year, pop)
     regression_line = plt.plot([year[0], year[-1]],
